@@ -179,11 +179,6 @@ function pre_install(){
 
 # Download files
 function download_files(){
-    # Download libsodium file
-    #if ! wget --no-check-certificate -O libsodium-1.0.11.tar.gz https://github.com/jedisct1/libsodium/releases/download/1.0.11/libsodium-1.0.11.tar.gz; then
-        #echo "Failed to download libsodium file!"
-        #exit 1
-    #fi
     # Download ShadowsocksR chkconfig file
     if [ "$OS" == 'CentOS' ]; then
         if ! wget --no-check-certificate https://raw.githubusercontent.com/Dwwwwww/shadowsocks_install/master/shadowsocksR-manyuser -O /etc/init.d/shadowsocks; then
@@ -219,10 +214,7 @@ function install_ss(){
         apt-get -y install python python-dev python-pip python-setuptools python-m2crypto curl wget git unzip gcc swig automake make perl cpio build-essential ntpdate
     fi
 	pip install cymysql
-    # Install libsodium
-    #tar zxf libsodium-1.0.11.tar.gz
-    #cd $cur_dir/libsodium-1.0.11
-    #./configure && make && make install
+	fi	
     echo "/usr/local/lib" > /etc/ld.so.conf.d/local.conf
     ldconfig
     # Install & Config ShadowsocksR
