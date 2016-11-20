@@ -1,0 +1,92 @@
+#!/bin/bash
+# chkconfig: 2345 90 10
+# description: start or stop the ShadowsocksR server
+#
+### BEGIN INIT INFO
+# Provides: ShadowsocksR
+# Required-Start: $network $syslog
+# Required-Stop: $network
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Description: Start or stop the ShadowsocksR server
+### END INIT INFO
+
+# Author: Teddysun <i@teddysun.com>
+
+name=ShadowsocksR
+BIN=/usr/local/shadowsocks/server.py
+LOG=/usr/local/shadowsocks/ssserver.log
+
+start(){
+	ulimit -n 512000 && nohup python $BIN m>> $LOG 2>&1 &
+    RETVAL=$?
+    if [ "$RETVAL" = "0" ]; then
+        echo "$name start success"
+    else
+        echo "$name start failed"
+    fi
+}
+
+stop(){
+    pid=`ps -ef | grep -v grep | grep -i "${BIN}" | awk '{print $2}'`
+    if [[ ! -z $pid ]]; then
+        eval $(ps -ef | grep "[0-9] python ${BIN} m" | awk '{print "kill "$2}')
+        RETVAL=$?
+        if [ "$RETVAL" = "0" ]; then
+            echo "$name stop success"
+        else
+            echo "$name stop failed"
+        fi
+    else
+        echo "$name is not running"
+        RETVAL=1
+    fi
+}
+
+status(){
+    pid=`ps -ef | grep -v grep | grep -i "${BIN}" | awk '{print $2}'`
+    if [[ -z $pid ]]; then
+        echo "$name is not running"
+        RETVAL=1
+    else
+        echo "$name is running with PID $pid"
+        RETVAL=0
+    fi
+}
+
+log(){
+	tail -f $LOG
+}
+
+pull(){
+	cd /usr/local/shadowsocks
+	git pull
+}
+
+case "$1" in
+'start')
+    start
+    ;;
+'stop')
+    stop
+    ;;
+'status')
+    status
+    ;;
+'log')
+    log
+    ;;
+'pull')
+    pull
+    ;;
+'restart')
+    stop
+    start
+    RETVAL=$?
+    ;;
+*)
+    echo "Usage: $0 { start | stop | restart | status | log | pull }"
+    RETVAL=1
+    ;;
+esac
+exit $RETVAL
