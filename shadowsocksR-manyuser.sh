@@ -214,7 +214,6 @@ function install_ss(){
         apt-get -y install python python-dev python-pip python-setuptools python-m2crypto curl wget git unzip gcc swig automake make perl cpio build-essential ntpdate
     fi
 	pip install cymysql
-	fi	
     echo "/usr/local/lib" > /etc/ld.so.conf.d/local.conf
     ldconfig
     # Install & Config ShadowsocksR
